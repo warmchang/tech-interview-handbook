@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import type { PDFDocumentProxy } from 'react-pdf/node_modules/pdfjs-dist';
 import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from '@heroicons/react/20/solid';
-import { Button, Pagination, Spinner } from '@tih/ui';
+
+import { Button, Pagination, Spinner } from '~/ui';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -19,10 +19,6 @@ export default function ResumePdf({ url }: Props) {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState(750);
   const [componentWidth, setComponentWidth] = useState(780);
-
-  const onPdfLoadSuccess = (pdf: PDFDocumentProxy) => {
-    setNumPages(pdf.numPages);
-  };
 
   const onPageResize = () => {
     setComponentWidth(
@@ -44,7 +40,9 @@ export default function ResumePdf({ url }: Props) {
           file={url}
           loading={<Spinner display="block" size="lg" />}
           noData=""
-          onLoadSuccess={onPdfLoadSuccess}>
+          onLoadSuccess={(pdf) => {
+            setNumPages(pdf.numPages);
+          }}>
           <div
             style={{
               paddingLeft: clsx(
